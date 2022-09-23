@@ -1,45 +1,27 @@
 class Board
-  attr_accessor :child, :position
-  def initialize(position, child = [])
+  attr_accessor :parent, :child, :position
+  def initialize(position, parent = nil, child = nil)
     @position = position
-    @child = []
+    @child = child
   end
 end
 
 class Player
   def initialize
-    #@hash = {}
+    @hash = {}
+    @score = {}
   end
   def pick_a_number(num)
-    #@hash = {num: high_point = 0}
-    if num < 0 || num > 7 
-      return
-    else
-      create_board(num, 0)
-      #@hash = {num: high_point + 1}
-     
-    end
-  end
-  
-  def create_board(x, y, child = nil)
-    if x > 6 || x < 0 || y > 6 || y < 0
-      return
-    else
-      b = Board.new([x, y], child)
-      b.child = [
-        [x + 1, y], [x - 1, y], [x + 1, y + 1], [x + 1, y - 1], 
-        [x, y + 1], [x, y - 1], [x - 1, y + 1], [x - 1, y - 1]
-      ] if b.child == nil
-      b.child.each { |pos| create_board(pos[0], pos[1], pos)}
-      change_board(b, "O")
-    end
-  end
-
-  def change_board(board, sign)
-    board.position = sign
-    print board
+    @score[num] = 0 if @score[num] == nil 
+    @score[num] += 1
+   @hash[num] = @score[num]
+   puts @hash
+   
   end
 end
 
 p = Player.new
-pp p.pick_a_number(5)
+puts p.pick_a_number(5)
+puts p.pick_a_number(4)
+puts p.pick_a_number(4)
+puts p.pick_a_number(3)
