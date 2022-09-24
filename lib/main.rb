@@ -9,37 +9,46 @@ end
 $hash = {}
 $score = {}
 $picked_pos = []
+
 class Player
   def initialize(sign)
     @sign = sign
+    @board = []
   end
 
   def create_board(array)
     y = 0; x = 0
     until y == 7
-      puts
+      @board.push([])
       until x == 7
           if array.any? { |elm|  elm[0] == y && elm[1] == x}
-            array.any? { |elm|  print elm[2] if elm[0] == y && elm[1] == x }
+            array.any? { |elm| @board[y].push(@sign) if elm[0] == y && elm[1] == x }
           else
-            print "[-]" 
+            @board[y].push("[-]")
           end
         x += 1
       end
       y += 1; x = 0
     end
+    print @board
+  end
+
+  def turns(num)
+    pick_a_number(num)
+    change_board(num - 1, $hash[num])
+    create_board($picked_pos)
+    player_won(num, @highest_point, @sign)
+    game_end()
   end
 
   def pick_a_number(num)
      $score[num] == nil ? $score[num] = 0 : $score[num] += 1
-    $hash[num] = $score[num]
-    change_board(num - 1, $hash[num])
+     $hash[num] = $score[num]
   end
 
   def change_board(num, highest_point)
+    @highest_point = highest_point
     $picked_pos.push([num, highest_point, @sign])
-    create_board($picked_pos)
-    player_won(num, highest_point, @sign)
   end
 
   def player_won(x, y, sign)
@@ -57,7 +66,6 @@ class Player
           end
           if @start_pos[0] - elm [0] > 2 || @start_pos[1] - elm [1] > 2 ||
             elm[0] - @start_pos[0] > 2  || elm[1] - @start_pos[1] > 2
-            game_end()
           end
         end
       end
@@ -72,13 +80,8 @@ end
   end
 end
 
-p = Player.new("[O]")
-p.pick_a_number(5)
+p = Player.new(5)
+b = p.create_board([[4, 0, "[X]"]])
+puts b
 
 
-c = Player.new("[X]")
-c.pick_a_number(5)
-
-p.pick_a_number(5)
-
-c.pick_a_number(5)
