@@ -1,57 +1,32 @@
 require './lib/main'
-
-describe '#pick_a_number' do 
-  it "return an y axis position and highest point in the column" do
-    context "The row 5 was already picked once" do
-      picked_num = 5
-      highest_point = 1
-      expect(pick_a_number(picked_num, highest_point)).to eq([[5][1]])
+ describe Player do
+   let (:subject) { Player.new("[X]")}
+  describe "#pick_a_number" do
+    it "returns the exact position of the chosen element" do
+      num = 5
+      expect(subject.pick_a_number(num)).to eq(0)
     end
   end
 
-  it "changes the highest_point in this column by one" do
-    picked_num = 4
-    highest_point = 0
-    expect(pick_a_number(picked_num, highest_point)).to change(highest_point).by(1)
-  end
-
-  describe "#comp_picks" do
-    it "return the position of the highest point in the column" do
-      comp_pick = 6
-      highest_point = 0
-      expect(comp_pick).to be eq([[6][0]])
-    end
-  end
-end
   describe "#change_board" do
-    subject(:board)  { Board.new }
-    it "changes the board when player picks an number" do 
-      pick_a_number = [[4][0]]
-      expect(board[pick_a_number[1]]).to eq([1, 2, 3, "O", 5, 6, 7])
+    it "returns array of all chosen elements" do
+      num = 4
+      highest_point = 0
+      expect(subject.change_board(num, highest_point)).to eq([[4, 0, "[X]"]])
     end
 
-    it "changes the board when a computer picks an number" do
-      pick_a_number = [[4][0]]
-      comp_pick = [[5][0]]
-      expect(board[pick_a_number[1]]).to eq([1, 2, 3, "O", "X", 6, 7])
+    it "returns at least two elements is highest_point is bigger than 0" do
+      num = 4
+      highest_point = 1
+      expect(subject.change_board(num, highest_point)).not_to eq([[4, 0, "[X]"]])
     end
+ end
 
-    it "changes more than one picked number" do
-      board[pick_a_number[1]] = [1, 2, 3, "O", "X", 6, 7]
-      pick_a_number = [[4][1]]
-      expect(board[pick_a_number[1]]).to eq([1, 2, 3, "O", 5, 6, 7])
-    end
+ describe "#create_board" do
+  it "returns array with length of 7" do
+    arr = [[4, 0, "[X]"]]
+    board = create_board(arr)
+    expect(board.length).to eg(7)
   end
-
-
-describe "#play_won" do
-  subject(:board)  { Board.new }
-
-  it "returns a player won comunicat" do
-    board[0] = [1, 2, 3, "O", "X", 6, 7]
-    board[1] = [1, 2, 3, "O", "X", 6, 7]
-    board[2] = [1, 2, 3, "O", 5, 6, 7]
-    expect(play_won(board)).to eq("Player had Won")
-  end
-
+ end
 end
