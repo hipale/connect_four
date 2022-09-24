@@ -6,11 +6,12 @@ class Board
   end
 end
 
+$hash = {}
+$score = {}
+$picked_pos = []
 class Player
   def initialize
-    $hash = {}
-    $score = {}
-    @picked_pos = []
+   
   end
 
   def create_board(array, sign)
@@ -31,39 +32,49 @@ class Player
 
   def pick_a_number(num)
      $score[num] == nil ? $score[num] = 0 : $score[num] += 1
-     $hash[num] = $score[num]
-   
+    $hash[num] = $score[num]
+    puts $hash[num]
     change_board(num - 1, $hash[num])
   end
 
   def change_board(num, highest_point)
-  @picked_pos.push([num, highest_point])
-  create_board(@picked_pos, "[O]")
-  player_won(num, highest_point, "[O]")
+    $picked_pos.push([num, highest_point])
+    create_board($picked_pos, "[O]")
+    player_won(num, highest_point, "[O]")
   end
 
   def player_won(x, y, sign)
     @dif_moves = [[x + 1, y], [x - 1, y], [x + 1, y + 1], [x + 1, y - 1], 
     [x, y + 1], [x, y - 1], [x - 1, y + 1], [x - 1, y - 1]]
-          puts"C"
-          counter = 0
-          if @dif_moves.any? { |g| @picked_pos.any? { |elm| elm == g}}
-            until counter == 2
-              puts "D"
-              puts counter
-             g[0] += 1 if g[0] > x
-             g[0] -= 1 if g[0] < x
-             g[1] += 1 if g[0] > y
-             g[1] -= 1 if g[0] < y
-             counter += 1
-            end
-            return "Player Won"
+    if $picked_pos.any? do |elm|
+      if @dif_moves.any? do |para|
+        if para == elm 
+          @start_pos = para
+          until $picked_pos.none? { |dif_val| dif_val == para }
+            para[0] += 1 if para[0] > x
+            para[0] -= 1 if para[0] < x
+            para[1] += 1 if para[1] > y
+            para[1] -= 1 if para[1] < y
           end
+          if @start_pos[0] - elm [0] > 2 || @start_pos[1] - elm [1] > 2 ||
+            elm[0] - @start_pos[0] > 2  || elm[1] - @start_pos[1] > 2
+            game_end()
+          end
+        end
+      end
+    end
+  end
+end
+end
+
+  def game_end
+    puts "Player Won"
+   return "Player Won"
   end
 end
 
 p = Player.new
 p.pick_a_number(5)
-p.pick_a_number(5)
-p.pick_a_number(5)
-p.pick_a_number(5)
+
+c = Player.new
+c.pick_a_number(5)
