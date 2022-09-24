@@ -10,20 +10,20 @@ $hash = {}
 $score = {}
 $picked_pos = []
 class Player
-  def initialize
-   
+  def initialize(sign)
+    @sign = sign
   end
 
-  def create_board(array, sign)
+  def create_board(array)
     y = 0; x = 0
     until y == 7
       puts
       until x == 7
-        if array.any? { |elm| elm[0] == y && elm[1] == x}
-          print "#{sign}"
-        else 
-          print "[-]"
-        end
+          if array.any? { |elm|  elm[0] == y && elm[1] == x}
+            array.any? { |elm|  print elm[2] if elm[0] == y && elm[1] == x }
+          else
+            print "[-]" 
+          end
         x += 1
       end
       y += 1; x = 0
@@ -33,14 +33,13 @@ class Player
   def pick_a_number(num)
      $score[num] == nil ? $score[num] = 0 : $score[num] += 1
     $hash[num] = $score[num]
-    puts $hash[num]
     change_board(num - 1, $hash[num])
   end
 
   def change_board(num, highest_point)
-    $picked_pos.push([num, highest_point])
-    create_board($picked_pos, "[O]")
-    player_won(num, highest_point, "[O]")
+    $picked_pos.push([num, highest_point, @sign])
+    create_board($picked_pos)
+    player_won(num, highest_point, @sign)
   end
 
   def player_won(x, y, sign)
@@ -73,8 +72,13 @@ end
   end
 end
 
-p = Player.new
+p = Player.new("[O]")
 p.pick_a_number(5)
 
-c = Player.new
+
+c = Player.new("[X]")
+c.pick_a_number(5)
+
+p.pick_a_number(5)
+
 c.pick_a_number(5)
