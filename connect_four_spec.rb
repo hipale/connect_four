@@ -25,8 +25,26 @@ require './lib/main'
  describe "#create_board" do
   it "returns array with length of 7" do
     arr = [[4, 0, "[X]"]]
-    board = create_board(arr)
-    expect(board.length).to eg(7)
+    board = subject.create_board(arr)
+    expect(board.length).to eq(7)
+  end
+
+  it "always changes elements that are put on the begining" do
+    arr = [[4, 0, "[X]"], [5, 0, "[O]"]]
+    board = subject.create_board(arr)
+    expect(board[4][0] && board[5][0]).not_to eq("[-]")
+  end
+ end
+
+ describe "#game_end" do
+  it "returns the string with information about who won" do
+    sign = "[O]"
+    expect(subject.game_end(sign)).to eq("Player 1 Won")
+  end
+
+  it "returns nil, if the sign is not equal to '[O]' or '[X]'" do
+    sign = 2
+    expect(subject.game_end(sign)).to eq(nil)
   end
  end
 end
