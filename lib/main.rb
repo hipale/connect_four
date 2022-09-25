@@ -29,6 +29,11 @@ class Player
     $hash[num] = $score[num]
   end
 
+  def change_board(num, highest_point)
+    @highest_point = highest_point
+    $picked_pos.push([num, highest_point, @sign])
+  end
+
   def create_board(array)
     y = 0; x = 0; @board = []
     until y == 7
@@ -36,7 +41,7 @@ class Player
       puts 
       until x == 7
           if array.any? { |elm|  elm[0] == y && elm[1] == x}
-            array.any? { |elm| @board[y].push(@sign) if elm[0] == y && elm[1] == x }
+            array.any? { |elm| @board[y].push(elm[2]) if elm[0] == y && elm[1] == x }
           else
             @board[y].push("[-]")      
           end
@@ -47,25 +52,36 @@ class Player
     end
     @board
   end
-
-  def change_board(num, highest_point)
-    @highest_point = highest_point
-    $picked_pos.push([num, highest_point, @sign])
-  end
-
+ 
   def player_won(x, y, sign)
-    @dif_moves = [[x + 1, y], [x - 1, y], [x + 1, y + 1], [x + 1, y - 1], 
-    [x, y + 1], [x, y - 1], [x - 1, y + 1], [x - 1, y - 1]]
+    puts sign
+    selected_pos = $picked_pos.select { |elm| elm.include? sign } 
+    if selected_pos.length >= 4
+      puts "as"
+      num = 3
+      if selected_pos.all? { |elm| elm[0] == num}
+        puts "As"
+        game_end(sign) if selected_pos[num][-1] - selected_pos[num][-4] == 4
+      elsif selected_pos.all? { |elm| elm[1] == num }
+        puts "As"
+        game_end(sign) if selected_pos[-1][num] - selected_pos[-4][num] == 4
+      end
+    end
   end
 
   def game_end(sign)
+    puts "as"
     return "Player 1 Won" if sign == "[O]"
     return "Player 2 Won" if sign == "[X]"
   end
 end
 
 p = Player.new("[X]")
-p.turns(5)
-p.turns(5)
-p.turns(5)
-p.turns(5)
+p.turns(4)
+p.turns(4)
+p.turns(4)
+p.turns(4)
+c = Player.new("[O]")
+c.turns(6)
+
+
