@@ -59,6 +59,8 @@ class Player
     until num == selected_pos.length - 2
       if selected_pos[num][0] + 1 == selected_pos[num + 1][0]
         game_end(sign)
+      elsif selected_pos[num][1] + 1 == selected_pos[num + 1][1]
+        game_end(sign)
       end
       num += 1
     end
@@ -72,10 +74,10 @@ class Player
 end
 
 p = Player.new("[X]")
-p.turns(3)
-p.turns(4)
-p.turns(1)
-p.turns(2)
+p.turns(5)
+p.turns(7)
+p.turns(6)
+p.turns(8)
 c = Player.new("[O]")
 c.turns(6)
 
