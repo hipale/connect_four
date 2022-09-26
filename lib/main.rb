@@ -53,19 +53,14 @@ class Player
     @board
   end
  
-  def player_won(x, y, sign)
-    puts sign
-    selected_pos = $picked_pos.select { |elm| elm.include? sign } 
-    if selected_pos.length >= 4
-      puts "as"
-      num = 3
-      if selected_pos.all? { |elm| elm[0] == num}
-        puts "As"
-        game_end(sign) if selected_pos[num][-1] - selected_pos[num][-4] == 4
-      elsif selected_pos.all? { |elm| elm[1] == num }
-        puts "As"
-        game_end(sign) if selected_pos[-1][num] - selected_pos[-4][num] == 4
+  def player_won(x, y, sign, num = 0)
+    selected_pos = $picked_pos.sort.select { |elm| elm[2] == sign }
+    return if selected_pos.length < 4
+    until num == selected_pos.length - 2
+      if selected_pos[num][0] + 1 == selected_pos[num + 1][0]
+        game_end(sign)
       end
+      num += 1
     end
   end
 
@@ -77,11 +72,12 @@ class Player
 end
 
 p = Player.new("[X]")
+p.turns(3)
 p.turns(4)
-p.turns(4)
-p.turns(4)
-p.turns(4)
+p.turns(1)
+p.turns(2)
 c = Player.new("[O]")
 c.turns(6)
+
 
 
