@@ -20,7 +20,7 @@ class Player
     pick_a_number(num)
     change_board(num - 1, $hash[num])
     new_board = create_board($picked_pos)
-    player_won(num, @highest_point, @sign)
+    player_won(@sign)
     new_board
   end
 
@@ -53,33 +53,40 @@ class Player
     @board
   end
  
-  def player_won(x, y, sign, num = 0)
+  def player_won(sign, num = 0, index = nil)
+
     selected_pos = $picked_pos.sort.select { |elm| elm[2] == sign }
+    game_end(sign) && return if num == 3
     return if selected_pos.length < 4
-    until num == selected_pos.length - 2
-      if selected_pos[num][0] + 1 == selected_pos[num + 1][0]
-        game_end(sign)
-      elsif selected_pos[num][1] + 1 == selected_pos[num + 1][1]
-        game_end(sign)
+    #print selected_pos[num]
+    x = selected_pos[num][0]; y = selected_pos[num][1]
+   
+    dif_moves = [
+      [x + 1, y], [x - 1, y], [x + 1, y + 1], [x + 1, y - 1], 
+      [x, y + 1], [x, y - 1], [x - 1, y + 1], [x - 1, y - 1]
+    ] 
+    if index != nil then dif_moves = [dif_moves[index]] end
+    print dif_moves
+    
+    dif_moves.each_with_index do |elm, inx|
+      if selected_pos[num + 1][0] == elm[0] && selected_pos[num + 1][1] == elm[1]
+        inx = index if index != nil
+        player_won(sign, num + 1, inx)
+        puts "as"
       end
-      num += 1
     end
   end
 
   def game_end(sign)
-    puts "as"
+    puts "a"
     return "Player 1 Won" if sign == "[O]"
     return "Player 2 Won" if sign == "[X]"
   end
 end
 
 p = Player.new("[X]")
-p.turns(5)
-p.turns(7)
-p.turns(6)
-p.turns(8)
 c = Player.new("[O]")
-c.turns(6)
-
-
-
+p.turns(5)
+p.turns(5)
+p.turns(5)
+p.turns(5)
