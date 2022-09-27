@@ -6,10 +6,6 @@ class Board
   end
 end
 
-$hash = {}
-$score = {}
-$picked_pos = []
-
 class Player
   def initialize(sign)
     @sign = sign
@@ -73,17 +69,25 @@ class Player
   end
 
   def game_end(sign)
+    puts "a"
     return "Player 1 Won" if sign == "[O]"
     return "Player 2 Won" if sign == "[X]"
+    $game_end = true
   end
 end
 
+$hash = {}
+$score = {}
+$picked_pos = []
 p = Player.new("[O]")
-p.turns(5)
-p.turns(5)
-p.turns(5)
-p.turns(5)
-p.turns(5)
-p.turns(5)
-p.turns(5)
-p.turns(5)
+c = Player.new("[X]")
+
+until $game_end == true
+  puts "Player 1, chose a column"
+  prompt = gets
+  p.turns(prompt.to_i)
+    
+  puts "Player 2, chose a column"
+  prompt = gets
+  c.turns(prompt.to_i)
+end
