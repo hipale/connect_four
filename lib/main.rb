@@ -13,7 +13,6 @@ class Player
 
   def turns(num)
     pick_a_number(num)
-    change_board(num - 1, $hash[num])
     new_board = create_board($picked_pos)
     player_won(@sign)
     new_board
@@ -21,13 +20,19 @@ class Player
 
   def pick_a_number(num)
     $score[num] == nil ? $score[num] = 0 : $score[num] += 1
-    return if $score[num] > 6 
+    until $score[num] < 7  && num < 8 && num > 0 do
+      $score[num] -= 1
+      puts "Wrong number"
+      num = gets.chomp.to_i
+      $score[num] == nil ? $score[num] = 0 : $score[num] += 1
+    end
     $hash[num] = $score[num]
+    change_board(num - 1, $hash[num])
   end
 
   def change_board(num, highest_point)
     @highest_point = highest_point
-    $picked_pos.push([num, highest_point, @sign])
+    $picked_pos.unshift([num, highest_point, @sign])
   end
 
   def create_board(array)
@@ -50,7 +55,6 @@ class Player
   end
  
   def player_won(sign, num = 0, index = nil)
-
     selected_pos = $picked_pos.sort.select { |elm| elm[2] == sign }
     game_end(sign) && return if num == 3
     return if selected_pos.length < 4
@@ -61,7 +65,9 @@ class Player
     ] 
     if index != nil then dif_moves = [dif_moves[index]] end
     dif_moves.each_with_index do |elm, inx|
-      if selected_pos[num + 1][0] == elm[0] && selected_pos[num + 1][1] == elm[1]
+      return if selected_pos[num + 1] == nil
+      if selected_pos[num + 1][0] == elm[0] && selected_pos[num + 1][0] == elm[0]
+        print elm
         inx = index if index != nil
         player_won(sign, num + 1, inx)
       end
@@ -70,24 +76,25 @@ class Player
 
   def game_end(sign)
     puts "a"
-    return "Player 1 Won" if sign == "[O]"
-    return "Player 2 Won" if sign == "[X]"
-    $game_end = true
+    $end_game = true
+    return
   end
 end
 
 $hash = {}
 $score = {}
 $picked_pos = []
-p = Player.new("[O]")
-c = Player.new("[X]")
+$end_game = false
 
-until $game_end == true
-  puts "Player 1, chose a column"
-  prompt = gets
-  p.turns(prompt.to_i)
-    
-  puts "Player 2, chose a column"
-  prompt = gets
-  c.turns(prompt.to_i)
+until $end_game == true do
+  return if $end_game == true
+  p = Player.new("[O]")
+  c = Player.new("[X]")
+    puts "Player 1, chose a column"
+    prompt = gets
+    p.turns(prompt.to_i)
+    return if $end_game == true
+    puts "Player 2, chose a column"
+    prompt = gets
+    c.turns(prompt.to_i)
 end
